@@ -64,6 +64,12 @@ The IR version has two sketches, using the **IRremote (v4.x)** and **RTClib** li
 
 ---
 
+## Status
+
+The original build (the board, the lamp, and the capture rig) has since been retired, so the lamp's real codes are no longer on hand. The `sendNEC` codes in `transmitter.ino` are examples; capture your own with `reciever.ino` before using it.
+
+---
+
 ## Design evolution
 
 This started rougher than the final version. Earlier attempts included switching a mains lamp through a relay (scrapped as unsafe) and driving an onboard high-power LED through a MOSFET. The IR-transmitter approach won out because it's the safest and simplest way to control an existing lamp without touching mains voltage or rewiring anything.
