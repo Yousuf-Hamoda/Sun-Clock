@@ -1,0 +1,109 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "e4b61f93-66ad-4275-a286-ba6c003bb0c5")
+	(paper "User" 431.8 279.4)
+	(title_block
+		(title "IR Transmitter (Main Circuit)")
+	)
+	(lib_symbols)
+	(sheet
+		(at 22.86 24.13)
+		(size 104.14 71.12)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "a372094b-9a30-4ef1-80a2-149ed0cecb22")
+		(property "Sheetname" "IR Tranmitter"
+			(at 22.86 23.4184 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "transmitter.kicad_sch"
+			(at 22.86 95.8346 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Sun Clock"
+				(path "/e4b61f93-66ad-4275-a286-ba6c003bb0c5"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 153.67 24.13)
+		(size 104.14 71.12)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "b5602e18-401f-4a47-9a1b-360cae297989")
+		(property "Sheetname" "IR Reciever"
+			(at 153.67 23.4184 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "reciever.kicad_sch"
+			(at 153.67 95.8346 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Sun Clock"
+				(path "/e4b61f93-66ad-4275-a286-ba6c003bb0c5"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

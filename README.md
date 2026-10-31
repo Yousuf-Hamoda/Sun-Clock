@@ -46,10 +46,12 @@ At the set time, an **Arduino** reads a **DS1307 real-time clock** over I²C, th
 
 ## Firmware
 
-Two sketches, both using the **IRremote (v4.x)** and **RTClib** libraries.
+The IR version has two sketches, using the **IRremote (v4.x)** and **RTClib** libraries. The original LED version is kept alongside them.
 
 - **`reciever.ino`:** the one-time capture rig. Wire an IR receiver module (e.g. TSOP38238) to **D2**, open the Serial Monitor at 9600 baud, and press your lamp remote's buttons. It prints the protocol, address, and command, plus a ready-to-paste `IrSender` line.
 - **`transmitter.ino`:** the sun clock itself. Reads the DS1307 and, at the alarm time, transmits the captured "on" code on **D3**. Includes an optional auto-off time. The `sendNEC` codes committed here are placeholders; replace them with the codes captured from your own remote.
+
+- **`light_alarm/light_alarm.ino`:** the first version, before the IR redesign. At the alarm time it fades an LED in with PWM over 15 minutes, and a sound sensor on **D2** toggles the light on a double clap (two claps within 850 ms). Uses **RTClib** only.
 
 ### Setup
 
@@ -77,9 +79,10 @@ This started rougher than the final version. Earlier attempts included switching
 ## Repo contents
 
 ```
-├── transmitter.ino     # sun clock firmware (RTC + IR transmit)
-├── reciever.ino        # IR capture rig (grabs the remote's codes)
+├── transmitter.ino          # sun clock firmware (RTC + IR transmit)
+├── reciever.ino             # IR capture rig (grabs the remote's codes)
+├── light_alarm/
+│   └── light_alarm.ino      # first version: PWM sunrise fade + double-clap toggle
+├── kicad/                   # project, root sheet, transmitter + receiver sheets, PCB outline, ERC report
 └── README.md
 ```
-
-The KiCad schematics are not in the repo yet.
