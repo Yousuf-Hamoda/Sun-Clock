@@ -21,10 +21,10 @@ At the set time, an **Arduino** reads a **DS1307 real-time clock** over I²C, th
                                                                                 (existing remote receiver)
 ```
 
-- **Timekeeping** — a DS1307 real-time clock chip keeps accurate time even when unplugged, using a coin-cell backup battery and a 32.768 kHz crystal.
-- **Triggering the lamp** — an IR LED, driven through a **2N2222 / BC547 transistor** for range, transmits the captured "on" code on the standard 38 kHz carrier.
-- **Power** — a **USB-C port** soldered directly to the board keeps it always powered.
-- **Design** — the full circuit is drawn in **KiCad** across two schematic sheets (a transmitter and an IR-capture receiver) and passes KiCad's Electrical Rules Check.
+- **Timekeeping:** a DS1307 real-time clock chip keeps accurate time even when unplugged, using a coin-cell backup battery and a 32.768 kHz crystal.
+- **Triggering the lamp:** an IR LED, driven through a **2N2222 / BC547 transistor** for range, transmits the captured "on" code on the standard 38 kHz carrier.
+- **Power:** a **USB-C port** soldered directly to the board keeps it always powered.
+- **Design:** the circuit is drawn in **KiCad** across two schematic sheets (a transmitter and an IR-capture receiver). The Electrical Rules Check still flags the Nano's unused pins (no no-connect markers yet) and missing power flags, and the PCB layout is not routed yet.
 
 ---
 
@@ -48,8 +48,8 @@ At the set time, an **Arduino** reads a **DS1307 real-time clock** over I²C, th
 
 Two sketches, both using the **IRremote (v4.x)** and **RTClib** libraries.
 
-- **`reciever.ino`** — the one-time capture rig. Wire an IR receiver module (e.g. TSOP38238) to **D2**, open the Serial Monitor at 9600 baud, and press your lamp remote's buttons. It prints the protocol, address, and command, plus a ready-to-paste `IrSender` line.
-- **`transmitter.ino`** — the sun clock itself. Reads the DS1307 and, at the alarm time, transmits the captured "on" code on **D3**. Includes an optional auto-off time.
+- **`reciever.ino`:** the one-time capture rig. Wire an IR receiver module (e.g. TSOP38238) to **D2**, open the Serial Monitor at 9600 baud, and press your lamp remote's buttons. It prints the protocol, address, and command, plus a ready-to-paste `IrSender` line.
+- **`transmitter.ino`:** the sun clock itself. Reads the DS1307 and, at the alarm time, transmits the captured "on" code on **D3**. Includes an optional auto-off time. The `sendNEC` codes committed here are placeholders; replace them with the codes captured from your own remote.
 
 ### Setup
 
@@ -58,7 +58,7 @@ Two sketches, both using the **IRremote (v4.x)** and **RTClib** libraries.
 3. Paste those into `lampOn()` / `lampOff()` in `transmitter.ino`.
 4. On the first upload of `transmitter.ino`, uncomment the `rtc.adjust(...)` line to set the clock, then re-comment it and upload again.
 
-> If capture prints `Protocol=UNKNOWN`, your remote uses a non-standard protocol — capture the raw timing with IRremote's `ReceiveDump` example and send it with `IrSender.sendRaw()` instead.
+> If capture prints `Protocol=UNKNOWN`, your remote uses a non-standard protocol. Capture the raw timing with IRremote's `ReceiveDump` example and send it with `IrSender.sendRaw()` instead.
 
 ---
 
@@ -79,6 +79,7 @@ This started rougher than the final version. Earlier attempts included switching
 ```
 ├── transmitter.ino     # sun clock firmware (RTC + IR transmit)
 ├── reciever.ino        # IR capture rig (grabs the remote's codes)
-├── kicad/              # transmitter + receiver schematic sheets
 └── README.md
 ```
+
+The KiCad schematics are not in the repo yet.
