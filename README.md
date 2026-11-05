@@ -51,7 +51,32 @@ The IR version has two sketches, using the **IRremote (v4.x)** and **RTClib** li
 - **`reciever.ino`:** the one-time capture rig. Wire an IR receiver module (e.g. TSOP38238) to **D2**, open the Serial Monitor at 9600 baud, and press your lamp remote's buttons. It prints the protocol, address, and command, plus a ready-to-paste `IrSender` line.
 - **`transmitter.ino`:** the sun clock itself. Reads the DS1307 and, at the alarm time, transmits the captured "on" code on **D3**. Includes an optional auto-off time. The `sendNEC` codes committed here are placeholders; replace them with the codes captured from your own remote.
 
-- **`light_alarm/light_alarm.ino`:** the first version, before the IR redesign. At the alarm time it fades an LED in with PWM over 15 minutes, and a sound sensor on **D2** toggles the light on a double clap (two claps within 850 ms). Uses **RTClib** only.
+- **`light_alarm/light_alarm.ino`:** the first version, before the IR redesign. At the alarm time it fades an LED in with PWM over 15 minutes along an exponential, sunrise-matched curve (see below), and a sound sensor on **D2** toggles the light on a double clap (two claps within 850 ms). Uses **RTClib** only.
+
+### The sunrise brightness curve (`light_alarm.ino`)
+
+The first version faded the LED in with a **linear** PWM ramp (`map(t, 0, T, 0, 255)`). Looking at how real daylight behaves showed that a linear ramp isn't the right shape, so the fade now follows an **exponential** curve.
+
+**What the sun actually does.** Under a clear sky, horizontal illuminance during morning civil twilight (sun 6° below the horizon up to sunrise) climbs from about **3.4 lux to about 410 lux**. That's roughly a 120× increase over about 30 minutes at mid-latitudes ([AMS Glossary](https://glossary.ametsoc.org/wiki/civil-twilight/)). Before that, nautical twilight starts near 0.008 lux, so light grows by about two orders of magnitude for every 6° the sun climbs. In other words, light rises **exponentially in time**, not linearly. The end point also fits the use: clinical dawn simulators peak at about 100–300 lux ([Dawn simulation](https://en.wikipedia.org/wiki/Dawn_simulation)), which is about what the sun gives at sunrise.
+
+**What the LED does.** `analogWrite` doesn't output a lower voltage. It switches the pin between 0 V and 5 V, and the duty cycle sets the *average* current. An LED's light output is roughly proportional to its current, so **brightness ∝ duty cycle**. If you varied a DC voltage instead, the current (and the light) would rise exponentially once you passed the forward voltage (Shockley diode equation). That's very hard to control, and it's why PWM is used.
+
+**The equation.** To make the LED follow civil twilight, compressed into the fade time *T*:
+
+```
+duty(t) = 255 · (1/120)^(1 − t/T)        0 ≤ t ≤ T
+```
+
+This starts at about 2/255 (the "first light" level) and finishes at 255, growing about 120× just like the sky does. A 120:1 range also fits inside 8-bit PWM (1–255). The full night-to-sunrise range of about 50,000:1 would not.
+
+**Why it also looks right.** Eyes judge brightness on a roughly logarithmic / cube-root scale (Weber–Fechner, CIE lightness). Here is the perceived lightness (CIE L*, 0–100) for both ramps over a 15-minute fade:
+
+| minute | 0 | 1 | 3 | 5 | 7.5 | 10 | 12 | 15 |
+|---|---|---|---|---|---|---|---|---|
+| linear ramp | 0 | 31 | 52 | 64 | 76 | 85 | 92 | 100 |
+| exponential (sun) | 7 | 10 | 16 | 24 | 36 | 52 | 68 | 100 |
+
+The linear ramp reaches half of its perceived brightness in the first 3 minutes and then hardly changes. It looks like the light "pops on" and then stalls. The exponential ramp brightens gradually through the whole fade, the way a real dawn does.
 
 ### Setup
 

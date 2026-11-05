@@ -15,6 +15,7 @@ int ledStatus=0;
 // Alarm Variables
 bool alarmOn = false;
 const int fadeDuration = 15; // Time in minutes for the LED fade-in
+const float TWILIGHT_RATIO = 410.0 / 3.4; // sunrise lux / start-of-civil-twilight lux (~120)
 
 // Set the alarm time
 const int alarmHour = 6;
@@ -101,8 +102,13 @@ void fadeLight() {
   // Fade-in the LED over the specified duration
   while (millis() - startTime <= fadeDuration*60000) {
     Serial.println("Led is Fading");
-    int alarmBrightness = map(millis() - startTime, 0, fadeDuration*60000, 0, 255);
-    analogWrite(ledPin, alarmBrightness);
+    // Exponential "civil twilight" curve: real daylight rises ~120x
+    // (about 3.4 lux -> 410 lux) between sun at -6 deg and sunrise, roughly
+    // exponentially in time. LED light output is proportional to PWM duty, so:
+    //   duty(t) = 255 * (1/120)^(1 - t/T)   -> starts at ~2/255, ends at 255
+    float progress = (millis() - startTime) / (fadeDuration * 60000.0);
+    int alarmBrightness = round(255.0 * pow(TWILIGHT_RATIO, progress - 1.0));
+    analogWrite(ledPin, constrain(alarmBrightness, 1, 255));
     delay(100); // Adjust this value to control fade smoothness
   }
   
